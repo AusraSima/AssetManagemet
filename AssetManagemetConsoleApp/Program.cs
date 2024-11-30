@@ -4,7 +4,7 @@
 	{
 		static void Main(string[] args)
 		{
-			/* To create Asset management Console App
+			/* Goal - to create Asset management Console App
              * Users' data are in the Users table
              * Assets' data are in the Assets table
              * Requests' data are in the Requests table
