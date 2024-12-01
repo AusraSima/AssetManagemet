@@ -1,5 +1,4 @@
-﻿using AssetManagemetConsoleApp.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +15,7 @@ namespace AssetManagemetConsoleApp
 			string filePath = "AssetsTable.txt";
 			string header = "AssetId\tName\t\tType\tAcquisitionDate\tPurchaseValue";
 
-			CreateTable.CreatingTable(filePath, header);
+			Helpers.CreatingTable(filePath, header);
 		}
 
 		// Available actions in a table: add asset, edit asset, delete asset
