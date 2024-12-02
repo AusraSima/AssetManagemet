@@ -8,6 +8,6 @@ namespace AssetManagemetConsoleApp
 {
 	internal class RequestsPage
 	{
-		// TODO: create Requests file
+		// To be implemented
 	}
 }

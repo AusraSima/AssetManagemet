@@ -3,42 +3,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClosedXML;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Office.CoverPageProps;
 
 namespace AssetManagemetConsoleApp
 {
 	internal class Helpers
 	{
-		public static void CreatingTable(string filePath, string header)
+		public static XLWorkbook OpenExelFile(string filePath)
 		{
-			if (string.IsNullOrWhiteSpace(filePath))
-				throw new ArgumentException("File path cannot be null or empty.", nameof(filePath));
-
-			if (string.IsNullOrWhiteSpace(header))
-				throw new ArgumentException("Headers cannot be null or empty.", nameof(header));
-
-			using (StreamWriter writer = new StreamWriter(filePath))
+			try
 			{
-				writer.WriteLine(header);
-				writer.Close();
-			}
-			Console.WriteLine($"Table was created successfully at {filePath}.");
-		}
-		// CRUD
-		public static void AddLineToTable(string filePath, string lines)
-		{
-			File.AppendAllText(filePath, lines);
-		}
-		public static void ReadTableLine(string filePath)
-		{
-			using (StreamReader reader = new StreamReader(filePath))
-			{
-				//string line;
-				while (!reader.EndOfStream)
+				if (!System.IO.File.Exists(filePath))
 				{
-					Console.WriteLine(reader.ReadLine());
+					throw new FileNotFoundException($"The file at path '{filePath}' was not found.");
 				}
+				var workbook = new XLWorkbook(filePath);
+				return workbook;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"An error occured while opening the Excel File: {ex.Message}");
+				throw;
 			}
 		}
+		// Actions in a table (add, edit, delete information)
+		public static void AddRow(IXLWorksheet worksheet, int row, List<object> data)
+		{
+			try
+			{
+				for (int col = 0; col < data.Count; col++)
+				{
+					var value = data[col];
+
+					// Check and assign value based on its type
+					if (value is string str)
+					{
+						worksheet.Cell(row, col + 1).Value = str;
+					}
+					else if (value is int intValue)
+					{
+						worksheet.Cell(row, col + 1).Value = intValue;
+					}
+					else if (value is double doubleValue)
+					{
+						worksheet.Cell(row, col + 1).Value = doubleValue;
+					}
+					else if (value is DateTime dateTimeValue)
+					{
+						worksheet.Cell(row, col + 1).Value = dateTimeValue;
+					}
+					else
+					{
+						// Fallback: use ToString for unsupported types
+						worksheet.Cell(row, col + 1).Value = value?.ToString() ?? string.Empty;
+					}
+				}
+
+				Console.WriteLine($"Row {row} added successfully.");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error adding row {row}: {ex.Message}");
+				throw;
+			}
+		}
+
 		public static void UpdateTable(string filePath, string lines)
 		{
 			// To be implemented
