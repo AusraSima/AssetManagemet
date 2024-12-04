@@ -14,7 +14,7 @@ namespace AssetManagemetConsoleApp
 		{
 			int selection = -1;     // User's action selection
 			bool validEntry = false;
-			string filePath = @"C:\Users\User\Desktop\App creation\UsersList.xls";
+			string filePath = @"C:\Users\User\Desktop\App creation\UsersList.xlsx";
 
 			// Open Users table
 			using (var workbook = Helpers.OpenExelFile(filePath))
@@ -34,9 +34,13 @@ namespace AssetManagemetConsoleApp
 						{
 							case 1:
 								Console.WriteLine("Adding new user");
+								int nextRow = worksheet.LastRowUsed()?.RowNumber() + 1 ?? 1;
+								List<string> usersList = new List<string> { "FullName", "Email", "Position", "Department" };
 								var newRowData = new List<object>();
-								// User should enter data
-								Helpers.AddRow(worksheet, 1, newRowData);
+								newRowData = Helpers.CreateRowData(usersList);
+								Helpers.AddRow(worksheet, nextRow, newRowData);
+								Helpers.SaveWorkbook(workbook, filePath);
+								Console.WriteLine("All changes added and saved successfully.");
 								break;
 							case 2:
 								Console.WriteLine("Editing existing user");

@@ -29,6 +29,7 @@
 					{
 						case 1: // Go to Users page
 							Console.WriteLine("Navigating to Users page");
+							UsersPage.ActionsInUsersPage();
 							break;
 						case 2: // Go to Assets page
 							Console.WriteLine("Navigating to Assets page");
