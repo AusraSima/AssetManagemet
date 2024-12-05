@@ -44,7 +44,13 @@ namespace AssetManagemetConsoleApp
 								break;
 							case 2:
 								Console.WriteLine("Editing existing user");
-								// To be implemented
+								Console.WriteLine("Enter the ID number of the row you want to edit.");
+								readResult = Console.ReadLine();
+								int rowNumber = Helpers.VerifyIfIntEntered(readResult);
+								List<string> headers = new List<string> { "ID", "FullName", "Email", "Position", "Department" };
+								Helpers.EditRow(worksheet, rowNumber, headers);
+								Helpers.SaveWorkbook(workbook, filePath);
+								Console.WriteLine("All changes saved successfully.");
 								break;
 							case 3:
 								Console.WriteLine("Deleting existing user");

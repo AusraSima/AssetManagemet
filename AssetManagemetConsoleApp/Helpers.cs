@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ClosedXML;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.InkML;
 using DocumentFormat.OpenXml.Office.CoverPageProps;
 
@@ -133,13 +134,80 @@ namespace AssetManagemetConsoleApp
 		}
 
 
-		public static void UpdateTable(string filePath, string lines)
+		public static void EditRow(IXLWorksheet worksheet, int rowToEdit, List<string> headers)
 		{
-			// To be implemented
+			try
+			{
+				if (worksheet == null)
+				{
+					throw new ArgumentNullException(nameof(worksheet), "Worksheet cannot be null.");
+				}
+
+				if (rowToEdit < 1 || rowToEdit > worksheet.LastRowUsed()?.RowNumber())
+				{
+					Console.WriteLine($"Row {rowToEdit} is invalid or out of range.");
+					return;
+				}
+
+				Console.WriteLine($"Editing row {rowToEdit}:");
+
+				for (int col = 1; col < headers.Count; col++)
+				{
+					if (col == 1 && headers[col - 1].Equals("ID", StringComparison.OrdinalIgnoreCase))
+					{
+						Console.WriteLine($"'{headers[col - 1]}' is an auto-generated column and cannot be edited.");
+						continue;
+					}
+
+					var currentCell = worksheet.Cell(rowToEdit, col);
+					Console.WriteLine($"Current value for '{headers[col - 1]}': {currentCell.Value}");
+
+					Console.WriteLine($"Enter new value for '{headers[col - 1]}' or leave blank to keep current value: ");
+					string input = Console.ReadLine();
+
+					if (!string.IsNullOrWhiteSpace(input))
+					{
+						if (int.TryParse(input, out int intValue))
+						{
+							currentCell.Value = intValue;
+						}
+						else if (double.TryParse(input, out double doubleValue))
+						{
+							currentCell.Value = doubleValue;
+						}
+						else if (DateTime.TryParse(input, out DateTime dateTimeValue))
+						{
+							currentCell.Value = dateTimeValue;
+						}
+						else
+						{
+							currentCell.Value = input;
+						}
+					}
+				}
+				Console.WriteLine($"Row {rowToEdit} updated successfully.");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error editing row {rowToEdit}: {ex.Message}");
+				throw;
+			}
 		}
-		public static void DeleteFromTable(string filePath, string lines)
+		/*public static void DeleteFromTable(string filePath, string lines)
 		{
 			// To be implemented
+		}*/
+		public static int VerifyIfIntEntered(string readResult)
+		{
+			while (true)
+			{
+				if (!string.IsNullOrEmpty(readResult) && int.TryParse(readResult, out int selection))
+				{
+					return selection;
+				}
+				Console.WriteLine("Invalid input.  Please enter a valid integer.");
+				readResult = Console.ReadLine();
+			}
 		}
 	}
 }
